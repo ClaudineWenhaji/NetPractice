@@ -1,0 +1,413 @@
+					NetPractice
+
+Le fonctionnement de l’adressage dans un réseau repose sur la manière dont les appareils (ordinateurs, téléphones, serveurs, etc.) sont identifiés pour pouvoir communiquer entre eux.
+
+Dans un réseau, chaque appareil possède une adresse IP (Internet Protocol). Cette adresse est comme une adresse postale : elle permet d’identifier de manière unique un appareil et de lui envoyer des données.
+
+1. Rôle des routeurs et des switches
+
+Switch (commutateur) :
+Il connecte plusieurs appareils au sein d’un même réseau local (LAN).
+Il utilise les adresses MAC (adresses physiques propres à chaque carte réseau) pour envoyer les données directement au bon appareil.
+
+Routeur :
+Il relie plusieurs réseaux entre eux (par exemple, ton réseau domestique et Internet).
+Il utilise les adresses IP pour acheminer les données d’un réseau à un autre.
+
+
+2. Fonctionnement de l’adressage TCP/IP
+
+Le modèle TCP/IP est un ensemble de règles qui permettent la communication sur les réseaux.
+
+** Adresse IP : identifie un appareil sur un réseau (ex : 192.168.1.1)
+** Masque de sous-réseau : détermine quelle partie de l’adresse correspond au réseau et quelle partie correspond à l’appareil
+** Passerelle (gateway) : généralement le routeur, qui permet d’accéder à d’autres réseaux
+** TCP (Transmission Control Protocol) : s’assure que les données arrivent correctement (fiabilité, ordre, retransmission)
+** IP (Internet Protocol) : s’occupe d’acheminer les paquets de données vers la bonne destination
+
+3. Exemple simple
+
+Quand tu envoies un message sur Internet :
+
+1- Ton appareil utilise l’adresse IP du destinataire.
+2- Les données sont envoyées à ton routeur.
+3- Le routeur les transmet à travers plusieurs réseaux.
+4- Chaque routeur sur le chemin utilise l’adresse IP pour diriger les données.
+5- Une fois arrivées dans le bon réseau, un switch envoie les données au bon appareil via son adresse MAC.
+
+Résumé
+* Les switches gèrent la communication locale (avec les adresses MAC).
+* Les routeurs gèrent la communication entre réseaux (avec les adresses IP).
+* Le TCP/IP permet d’adresser, envoyer et recevoir les données de manière fiable.
+
+
+[ Ton ordinateur ]
+       |
+       |  (réseau local - adresse MAC)
+       v
+    [ Switch ]
+       |
+       |  (toujours réseau local)
+       v
+    [ Routeur ]  ← (passerelle / gateway)
+       |
+       |  (Internet - adresses IP)
+       v
+  [ Réseau Internet ]
+       |
+       v
+[ Routeur distant ]
+       |
+       v
+    [ Switch ]
+       |
+       v
+[ Appareil destinataire ]
+
+
+
+Explication du schéma :
+
+1- Ton ordinateur → Switch
+	* Le switch utilise l’adresse MAC pour envoyer les données au bon appareil dans le réseau local.
+2- Switch → Routeur
+	* Le routeur sert de porte de sortie vers d’autres réseaux (Internet).
+3- Routeur → Internet
+	* Les données voyagent à travers plusieurs routeurs.
+	* Ici, ce sont les adresses IP qui sont utilisées pour trouver la destination.
+4- Arrivée dans le réseau distant
+	* Le routeur du réseau cible reçoit les données.
+	* Il les envoie au switch local.
+5- Switch → appareil destinataire
+	* Le switch utilise l’adresse MAC pour livrer les données au bon appareil.
+
+Image mentale simple :
+
+* Adresse IP = adresse d’un immeuble
+* Adresse MAC = numéro d’appartement
+* Routeur = facteur entre les villes
+* Switch = concierge dans l’immeuble
+
+***********************************************************
+
+Exercice 1 — Même réseau ou pas ?
+🔧 Données :
+Machine A : 192.168.1.10 / 255.255.255.0
+Machine B : 192.168.1.200 / 255.255.255.0
+❓ Question :
+
+Peuvent-elles communiquer directement ?
+
+✅ Correction :
+
+Masque /24 → les 3 premiers octets = réseau
+
+A → réseau = 192.168.1.0
+B → réseau = 192.168.1.0
+
+👉 Même réseau → OUI, communication directe possible
+
+***********************************************************
+
+Exercice 2 — Erreur de masque
+🔧 Données :
+Machine A : 192.168.1.10 / 255.255.255.0
+Machine B : 192.168.1.20 / 255.255.0.0
+❓ Question :
+
+Pourquoi ça ne marche pas correctement ?
+
+✅ Correction :
+A pense : réseau = 192.168.1.0
+B pense : réseau = 192.168.0.0
+
+👉 Elles ne voient pas le même réseau
+
+✔️ Solution :
+
+Mettre le même masque → 255.255.255.0
+
+***********************************************************
+
+Exercice 3 — Gateway manquante
+🔧 Données :
+PC1 : 192.168.1.10 / 255.255.255.0
+PC2 : 10.0.0.10 / 255.0.0.0
+Routeur :
+192.168.1.1
+10.0.0.1
+❓ Question :
+
+Pourquoi PC1 ne peut pas joindre PC2 ?
+
+✅ Correction :
+
+PC1 veut envoyer vers 10.0.0.10 → réseau différent
+
+👉 Il doit passer par une gateway
+❌ Mais aucune gateway n’est définie
+
+✔️ Solution :
+
+PC1 gateway = 192.168.1.1
+PC2 gateway = 10.0.0.1
+
+***********************************************************
+
+Exercice 4 — IP invalide
+🔧 Données :
+Machine A : 192.168.1.0 / 255.255.255.0
+Machine B : 192.168.1.255 / 255.255.255.0
+❓ Question :
+
+Quel est le problème ?
+
+✅ Correction :
+
+Dans un /24 :
+
+192.168.1.0 = adresse réseau
+192.168.1.255 = broadcast
+
+👉 Ces IP ne peuvent pas être utilisées
+
+✔️ Solution :
+
+Utiliser : 192.168.1.1 → 192.168.1.254
+
+***********************************************************
+
+Exercice 5 — Routeur mal configuré
+🔧 Données :
+PC1 : 192.168.1.10 / 255.255.255.0
+PC2 : 192.168.2.10 / 255.255.255.0
+Routeur :
+192.168.1.1
+192.168.3.1
+❓ Question :
+
+Pourquoi PC1 ne peut pas joindre PC2 ?
+
+✅ Correction :
+
+PC2 est dans réseau 192.168.2.0
+
+👉 Mais le routeur n’a aucune interface dans ce réseau
+
+❌ 192.168.3.1 ne sert à rien ici
+
+✔️ Solution :
+
+Remplacer par : 192.168.2.1
+
+***********************************************************
+
+Exercice 6 — Le piège classique NetPractice
+🔧 Données :
+PC1 : 10.0.0.2 / 255.0.0.0
+PC2 : 10.0.1.2 / 255.255.255.0
+❓ Question :
+
+Peuvent-ils communiquer directement ?
+
+✅ Correction :
+PC1 voit réseau : 10.0.0.0
+PC2 voit réseau : 10.0.1.0
+
+👉 Désaccord → communication cassée
+
+✔️ Solution :
+Deux options :
+
+mettre /8 partout
+ou /24 cohérent des deux côtés
+
+***********************************************************
+
+Exercice 7 — Route manquante (niveau 42 typique)
+🔧 Données :
+PC1 : 192.168.1.10 → GW 192.168.1.1
+Routeur A :
+192.168.1.1
+172.16.0.1
+Routeur B :
+172.16.0.2
+10.0.0.1
+PC2 : 10.0.0.10 → GW 10.0.0.1
+❓ Question :
+
+Pourquoi ça ne marche pas ?
+
+✅ Correction :
+
+PC1 → OK → routeur A
+Routeur A → envoie vers B → OK
+
+❌ MAIS :
+Routeur B ne sait pas revenir vers 192.168.1.0
+
+👉 Il manque une route
+
+✔️ Solution :
+Sur routeur B :
+destination : 192.168.1.0
+gateway : 172.16.0.1
+
+Ce que tu dois retenir
+
+Dans 90% des cas NetPractice :
+
+problème de masque
+problème de gateway
+problème de route
+ou IP invalide
+
+***********************************************************
+
+exemple: PC1 ---- R1 ---- R2 ---- PC3 Faire communiquer PC1 avec PC3
+
+PC1
+IP : 192.168.1.10
+Masque : 255.255.255.0
+Gateway : ❌ (vide)
+
+R1
+Interface 1 : 192.168.1.1 / 255.255.255.0
+Interface 2 : 172.16.0.1 / 255.255.255.0
+Routes : ❌ aucune
+
+R2
+Interface 1 : 172.16.0.2 / 255.255.255.0
+Interface 2 : 10.0.0.1 / 255.255.255.0
+Routes : ❌ aucune
+
+PC3
+IP : 10.0.0.10
+Masque : 255.255.255.0
+Gateway : ❌ (vide)
+
+ÉTAPE 1 — Identifier les réseaux
+
+Tu dois trouver :
+
+Réseau 1 : 192.168.1.0
+Réseau 2 : 172.16.0.0
+Réseau 3 : 10.0.0.0
+
+👉 Jusque-là tout est OK
+
+ÉTAPE 2 — Vérifier les connexions directes
+PC1 ↔ R1 → ✅ même réseau
+R1 ↔ R2 → ✅ même réseau
+R2 ↔ PC3 → ✅ même réseau
+
+👉 Donc le problème vient du routage / gateway
+
+ÉTAPE 3 — Corriger les gateways
+
+✔️ PC1
+Doit envoyer vers R1 : Gateway = 192.168.1.1
+
+✔️ PC3
+Doit envoyer vers R2 : Gateway = 10.0.0.1
+
+ÉTAPE 4 — Ajouter les routes
+
+🔴 Problème : R1 ne connaît pas le réseau 10.0.0.0
+
+✔️ Solution sur R1 : 
+Destination : 10.0.0.0
+Gateway : 172.16.0.2
+
+🔴 Problème : R2 ne connaît pas le réseau 192.168.1.0
+
+✔️ Solution sur R2 :
+Destination : 192.168.1.0
+Gateway : 172.16.0.1
+
+✅ Résultat final
+👉 PC1 → R1 → R2 → PC3 → OK
+👉 PC3 → retour → OK
+
+Ce niveau t’apprend
+importance des gateways
+routes dans les routeurs
+logique aller ET retour (très important à 42)
+
+🔥 MINI EXAM NETPRACTICE (niveau réaliste 42)
+
+PC1 ---- R1 ---- PC2 
+
+PC1
+IP : 192.168.1.10
+Masque : 255.255.255.0
+Gateway : 192.168.1.1
+
+R1
+Interface 1 : 192.168.1.1 / 255.255.255.0
+Interface 2 : 192.168.2.1 / 255.255.255.0
+
+PC2
+IP : 192.168.2.20
+Masque : ❌ 255.255.0.0
+Gateway : ❌ 192.168.1.1
+
+COMMENT TU DOIS RÉFLÉCHIR (niveau avancé)
+
+Toujours :
+
+corriger les IP invalides
+unifier les masques
+vérifier les gateways
+construire le chemin
+ajouter les routes
+vérifier le retour
+
+Gateway vs Route (explication claire)
+
+1. La Gateway (passerelle)
+
+👉 C’est la sortie par défaut d’une machine
+
+Quand un PC veut envoyer un paquet :
+
+s’il connaît le réseau → en direct
+sinon → il envoie à la gateway
+💡 En pratique :
+
+“Je ne sais pas où aller → j’envoie au routeur”
+
+Exemple :
+PC : 192.168.1.10
+Gateway : 192.168.1.1
+👉 Tout ce qui n’est pas dans 192.168.1.0 → envoyé à 192.168.1.1
+
+
+2. Une Route
+
+👉 C’est une instruction dans un routeur qui dit :
+
+“Pour atteindre CE réseau, passe par CE chemin”
+
+💡 En pratique :
+
+Une route = destination + prochain saut
+
+Destination ==> Next Hop
+
+Destination : 10.0.0.0
+Gateway : 172.16.0.2 
+👉 Ça veut dire :
+“Si tu veux aller vers 10.0.0.0, envoie vers 172.16.0.2”
+
+
+| Concept     | Où ?    | Rôle                       |
+| ----------- | ------- | -------------------------- |
+| **Gateway** | PC      | “je sors du réseau”        |
+| **Route**   | Routeur | “je sais où envoyer après” |
+
+Toujours penser :
+
+PC → gateway
+routeur → route
+vérifier le retour
