@@ -94,8 +94,10 @@ so Usable IP range: 192.168.1.1 - 192.168.1. 254
 # SUBNET (1 network)
 
 It's a sub network of a larger network. It defines a range of IP addresses of a network and identifies whether a host belongs to a network.
-The network address with CIDR notation of a subnet mask e.g. 192.163.1.0 /24
-A subnet mask indicates which part of an IP is fixed (network) and variable (host). e.g. /24 or 255.255.255.0
+The network address with CIDR notation of a subnet mask 
+- e.g. 192.163.1.0 /24
+A subnet mask indicates which part of an IP is fixed (network) and variable (host). 
+- e.g. /24 or 255.255.255.0
 The CIDR notation count the network bits
 
 # SUBNETTING (More than 1 network)
@@ -118,45 +120,30 @@ We do subnetting when we want to create more networks taking a network and divid
   b- Substract top row from 256
   c- From /32, list CIDR notation   (right to left)
 
-                    Cheat Sheet
+  Cheat Sheet
 
   128   64    32   |  16   |  8     4      2     1        Group Size
   128   192   224  |  240  |  248   252    254   255      Subnet Mask
   /25   /26   /27  |  /28  |  /29   /30    /31   /32      CIDR
 
-  1- Use given CIDR/mask to find column on cheat Sheet
-    a- CIDR?Subnet Mask map to each other
-    b- Locate group size
-    c- Start at ".0" in relevant octet
-    d- increase by Group Size until you PASS target IP
-  2- Number BEFORE target IP is NETWORK ID
-  3- Number AFTER target IP if the Next Network
-  4- IP address BEFORE Next Network is Boadcast
-  5- IP address AFTER Network ID is First Host
-  6- IP address BEFORE Broacast IP is Last Host
-  7- Group Size is total # of IP addresses
-    * Don't forget to substract 2 if needed
-
-                       ^
-Example 10.1.1.55 /28  |                        10.1.1.37 /29             10.2.2.199 /26                10.2.2.20 /30
-                   ^
-                   | .0 .16 .32 .48 .64         .0 .8 .16 .24 .32 .40       
-
-10.1.1.55 /28                                   10.1.1.37 /29               10.2.2.199 /26
-
-Network ID        10.1.1.48                     10.1.1.32               
-Broacast IP       10.1.1.63                     10.1.1.39
-First Host IP     10.1.1.49                     10.1.1.33
-Last Host IP      10.1.1.62                     10.1.1.38
-Next Network      10.1.1.64                     10.1.1.40
-IP Addresses      16  (14 usable)               8   (6 usable)
-CIDR / Subnet     255.255.255.240               255.255.255.248
+  - 1- Use given CIDR/mask to find column on cheat Sheet
+    - a- CIDR?Subnet Mask map to each other
+    - b- Locate group size
+    - c- Start at ".0" in relevant octet
+    - d- increase by Group Size until you PASS target IP
+  - 2- Number BEFORE target IP is NETWORK ID
+  - 3- Number AFTER target IP if the Next Network
+  - 4- IP address BEFORE Next Network is Boadcast
+  - 5- IP address AFTER Network ID is First Host
+  - 6- IP address BEFORE Broacast IP is Last Host
+  - 7- Group Size is total # of IP addresses
+    - Don't forget to substract 2 if needed
 
 Tips:
-1- The Group Size can be multipled by 10 then doubled or tripled if necessary
-2- Every Group Size at some point lands on 128 
-3- Every group size lands on a Subnet value of the same column to the LEFT
-4- Start higher  then substract
+- 1- The Group Size can be multipled by 10 then doubled or tripled if necessary
+- 2- Every Group Size at some point lands on 128 
+- 3- Every group size lands on a Subnet value of the same column to the LEFT
+- 4- Start higher  then substract
 
 # SWITCH
 
@@ -251,7 +238,7 @@ Devices communicate directly only if:
 | A      | 192.168.1.10 | 255.255.255.0 |
 | B      | 192.168.1.20 | 255.255.255.0 |
 
-✅ Same network → OK
+Same network → OK
 
 ## 7. Common Mistakes
 
@@ -280,7 +267,7 @@ Different networks → cannot communicate
 **Solution:**
 
 * Put both in same subnet
-  **or**
+* **or**
 * Add a router with correct gateways
 
 ## Tips for NetPractice
